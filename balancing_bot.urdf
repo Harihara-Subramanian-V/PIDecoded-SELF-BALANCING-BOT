@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="balancing_bot">
+
+  <!-- Material Definitions -->
+  <material name="chassis_dark">
+    <color rgba="0.12 0.14 0.18 1.0"/>
+  </material>
+  <material name="accent_cyan">
+    <color rgba="0.0 0.85 1.0 1.0"/>
+  </material>
+  <material name="mast_silver">
+    <color rgba="0.75 0.78 0.82 1.0"/>
+  </material>
+  <material name="wheel_rubber">
+    <color rgba="0.08 0.08 0.09 1.0"/>
+  </material>
+  <material name="rim_teal">
+    <color rgba="0.1 0.6 0.7 1.0"/>
+  </material>
+
+  <!-- Base Chassis Link -->
+  <!-- Base frame origin is at the wheel axle line (Z = 0.0). -->
+  <!-- Ground clearance: with 0.05m radius wheels, ground is at Z = -0.05m. -->
+  <!-- Chassis collision box starts at Z = +0.02m (giving 7cm clearance to ground). -->
+  <link name="base_link">
+    <!-- Center of mass explicitly at Z = 0.15m as per requirements -->
+    <inertial>
+      <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
+      <mass value="2.5"/>
+      <inertia ixx="0.0255" ixy="0.0" ixz="0.0" 
+               iyy="0.0201" iyz="0.0" 
+               izz="0.0081"/>
+    </inertial>
+
+    <!-- Main Chassis Body (Visual) -->
+    <visual>
+      <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.08 0.18 0.26"/>
+      </geometry>
+      <material name="chassis_dark"/>
+    </visual>
+
+    <!-- Visual Accent Stripe -->
+    <visual>
+      <origin xyz="0.041 0.0 0.15" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.16 0.22"/>
+      </geometry>
+      <material name="accent_cyan"/>
+    </visual>
+
+    <!-- Visual Top Telemetry Mast -->
+    <visual>
+      <origin xyz="0.0 0.0 0.29" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.02"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+
+    <!-- Chassis Collision Envelope -->
+    <!-- Positioned safely above wheel contact point to prevent any dragging -->
+    <collision>
+      <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.08 0.18 0.26"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Left Wheel Link -->
+  <link name="left_wheel">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.000203" ixy="0.0" ixz="0.0"
+               iyy="0.000375" iyz="0.0"
+               izz="0.000203"/>
+    </inertial>
+    <visual>
+      <!-- Cylinders in URDF are aligned with Z by default; rotate 90 deg around X to align with Y -->
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.025"/>
+      </geometry>
+      <material name="wheel_rubber"/>
+    </visual>
+    <visual>
+      <!-- Inner rim decorative marker to see wheel rotation clearly -->
+      <origin xyz="0.0 0.013 0.0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.028" length="0.002"/>
+      </geometry>
+      <material name="rim_teal"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.025"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Right Wheel Link -->
+  <link name="right_wheel">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.000203" ixy="0.0" ixz="0.0"
+               iyy="0.000375" iyz="0.0"
+               izz="0.000203"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.025"/>
+      </geometry>
+      <material name="wheel_rubber"/>
+    </visual>
+    <visual>
+      <!-- Inner rim decorative marker to see wheel rotation clearly -->
+      <origin xyz="0.0 -0.013 0.0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.028" length="0.002"/>
+      </geometry>
+      <material name="rim_teal"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.025"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Left Wheel Joint (Continuous on Y-axis) -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0.0 0.11 0.0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.002" friction="0.005"/>
+    <limit effort="15.0" velocity="40.0"/>
+  </joint>
+
+  <!-- Right Wheel Joint (Continuous on Y-axis) -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="0.0 -0.11 0.0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.002" friction="0.005"/>
+    <limit effort="15.0" velocity="40.0"/>
+  </joint>
+
+</robot>
