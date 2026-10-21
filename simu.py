@@ -51,9 +51,9 @@ def main():
     urdf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "balancing_bot.urdf")
     robot, left_j, right_j = spawn_robot(urdf_path)
 
-    sl_kp = p.addUserDebugParameter("Kp", 0.0, 60.0, 20.0)
-    sl_ki = p.addUserDebugParameter("Ki", 0.0, 5.0, 0.4)
-    sl_kd = p.addUserDebugParameter("Kd", 0.0, 8.0, 1.8)
+    sl_kp = p.addUserDebugParameter("Kp", 0.0, 60.0, 0.0)
+    sl_ki = p.addUserDebugParameter("Ki", 0.0, 5.0, 0.0)
+    sl_kd = p.addUserDebugParameter("Kd", 0.0, 8.0, 0.0)
     sl_ks = p.addUserDebugParameter("Kspd", 0.0, 0.2, 0.04)
     sl_lean = p.addUserDebugParameter("Target Lean (deg)", -8.0, 8.0, 0.0)
     sl_push = p.addUserDebugParameter("Live Push (N)", -15.0, 15.0, 0.0)
@@ -62,7 +62,7 @@ def main():
                        [-0.9, -0.85, 0.45], [0.7, 0.9, 1.0], 1.1, 0)
 
     integral = vel_smooth = 0.0
-    last_gains = (20.0, 0.4, 1.8, 0.04)
+    last_gains = (0.0, 0.0, 0.0, 0.04)
     imp_force = 0.0
     imp_steps = 0
     fallen = False
